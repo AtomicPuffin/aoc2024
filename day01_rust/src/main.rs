@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::fs;
 
 fn main() {
@@ -14,40 +15,33 @@ fn main() {
 }
 
 fn part_1(input: &str) -> i64 {
-    let mut sum = 0;
-    let lists = parse_lists(input);
-    let (mut list_a, mut list_b) = lists;
-    list_a.sort();
-    list_b.sort();
-    while let Some(a) = list_a.pop() {
-        let b = list_b.pop().unwrap();
-        sum += (a - b).abs();
-    }
-    sum
+    let (mut list_a, mut list_b) = parse_lists(input);
+    list_a
+        .iter()
+        .sorted()
+        .zip(list_b.iter().sorted())
+        .map(|(a, b)| (a - b).abs())
+        .sum()
 }
 
 fn part_2(input: &str) -> i64 {
-    let mut sum = 0;
-    let lists = parse_lists(input);
-    let (mut list_a, list_b) = lists;
-    while let Some(a) = list_a.pop() {
-        let increment = a * list_b.iter().filter(|&&x| x == a).count() as i64;
-        sum += increment;
-    }
-    sum
+    let (list_a, list_b) = parse_lists(input);
+    list_a
+        .into_iter()
+        .map(|a| a * list_b.iter().filter(|&&x| x == a).count() as i64)
+        .sum()
 }
 
 fn parse_lists(input: &str) -> (Vec<i64>, Vec<i64>) {
-    let mut list_a = Vec::new();
-    let mut list_b = Vec::new();
-    for line in input.lines() {
-        let parts = line.split("   ").collect::<Vec<&str>>();
-        let a = parts[0].parse::<i64>().unwrap();
-        let b = parts[1].parse::<i64>().unwrap();
-        list_a.push(a);
-        list_b.push(b);
-    }
-    (list_a, list_b)
+    input
+        .lines()
+        .map(|line| {
+            let parts = line.split("   ").collect::<Vec<&str>>();
+            let a = parts[0].parse::<i64>().unwrap();
+            let b = parts[1].parse::<i64>().unwrap();
+            (a, b)
+        })
+        .unzip()
 }
 
 fn read_file(file: &str) -> String {
