@@ -30,8 +30,6 @@ fn part_1(input: &str) -> i64 {
 }
 
 fn part_2(mut input: &str) -> i64 {
-    let pattern = r"mul\((\d+),(\d+)\)";
-    let re = Regex::new(pattern).unwrap();
     let mut sum = 0;
     let mut do_switch = "don't()";
     while let Some((before, after)) = input.split_once(do_switch) {
