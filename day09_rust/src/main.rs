@@ -1,6 +1,6 @@
-use itertools::Itertools;
-use std::collections::HashMap;
-use std::collections::HashSet;
+//use itertools::Itertools;
+//use std::collections::HashMap;
+//use std::collections::HashSet;
 use std::fs;
 
 fn main() {
@@ -18,7 +18,6 @@ fn main() {
 
 fn part_1(input: &str) -> i64 {
     let mut disk_map = parse_input(input);
-    let mut empty_pos = 0;
     let mut refrag_disk_map = Vec::new();
     while let Some(pos) = disk_map.first().cloned() {
         disk_map.remove(0);
@@ -56,13 +55,13 @@ fn parse_input(input: &str) -> Vec<i64> {
         if !free_flip {
             let file_length = c.to_string().parse::<i64>().unwrap();
             free_flip = true;
-            for i in 0..file_length {
+            for _ in 0..file_length {
                 disk_map.push(id_number);
             }
             id_number += 1;
         } else {
             free_flip = false;
-            for i in 0..c.to_string().parse::<i64>().unwrap() {
+            for _ in 0..c.to_string().parse::<i64>().unwrap() {
                 disk_map.push(-1);
             }
         }
@@ -108,7 +107,7 @@ fn part_2(input: &str) -> i64 {
     let mut sum = 0;
     let mut refrag_disk_map = Vec::new();
     for i in 0..disk_map.len() {
-        for j in 0..disk_map[i].1 {
+        for _ in 0..disk_map[i].1 {
             refrag_disk_map.push(disk_map[i].0);
         }
     }
@@ -175,6 +174,6 @@ mod tests {
 
     #[test]
     fn test_p2() {
-        assert_eq!(part_2(&read_file("input.txt")), 1157);
+        assert_eq!(part_2(&read_file("input.txt")), 6420913943576);
     }
 }
