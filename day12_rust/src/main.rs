@@ -1,4 +1,4 @@
-use itertools::Itertools;
+//use itertools::Itertools;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fs;
@@ -17,18 +17,22 @@ fn main() {
 }
 
 fn part_1(input: &str) -> i64 {
-    let mut garden = parse_input(input);
+    let regions = find_regions(&mut parse_input(input));
+    let mut sum = 0;
+    for region in regions {
+        sum += region.len() as i64 * find_fence(&region).len() as i64;
+    }
+    sum
+}
+
+fn find_regions(garden: &mut HashMap<(i64, i64), char>) -> Vec<HashSet<(i64, i64)>> {
     let mut regions = Vec::new();
     while !garden.is_empty() {
         let pos = *garden.keys().next().unwrap();
-        let region = find_region(&mut garden, pos);
+        let region = find_region(garden, pos);
         regions.push(region);
     }
-    let mut sum = 0;
-    for region in regions {
-        sum += calculate_fence(&region);
-    }
-    sum
+    regions
 }
 
 fn find_region(garden: &mut HashMap<(i64, i64), char>, pos: (i64, i64)) -> HashSet<(i64, i64)> {
@@ -50,17 +54,17 @@ fn find_region(garden: &mut HashMap<(i64, i64), char>, pos: (i64, i64)) -> HashS
     region
 }
 
-fn calculate_fence(region: &HashSet<(i64, i64)>) -> i64 {
-    let mut fence = 0;
+fn find_fence(region: &HashSet<(i64, i64)>) -> HashSet<((i64, i64), (i64, i64))> {
+    let mut fence_segments = HashSet::new();
     for pos in region {
         for dir in &[(0, 1), (0, -1), (1, 0), (-1, 0)] {
             let new_pos = (pos.0 + dir.0, pos.1 + dir.1);
             if !region.contains(&new_pos) {
-                fence += 1;
+                fence_segments.insert((*pos, *dir));
             }
         }
     }
-    fence * region.len() as i64
+    fence_segments
 }
 
 fn parse_input(input: &str) -> HashMap<(i64, i64), char> {
@@ -78,30 +82,15 @@ fn parse_input(input: &str) -> HashMap<(i64, i64), char> {
 }
 
 fn part_2(input: &str) -> i64 {
-    let mut garden = parse_input(input);
-    let mut regions = Vec::new();
-    while !garden.is_empty() {
-        let pos = *garden.keys().next().unwrap();
-        let region = find_region(&mut garden, pos);
-        regions.push(region);
-    }
+    let regions = find_regions(&mut parse_input(input));
     let mut sum = 0;
     for region in regions {
-        sum += calculate_fence_2(&region);
+        sum += region.len() as i64 * find_sides(&mut find_fence(&region));
     }
     sum
 }
-fn calculate_fence_2(region: &HashSet<(i64, i64)>) -> i64 {
-    let mut fence_segments = HashSet::new();
+fn find_sides(fence_segments: &mut HashSet<((i64, i64), (i64, i64))>) -> i64 {
     let mut sum = 0;
-    for pos in region {
-        for dir in &[(0, 1), (0, -1), (1, 0), (-1, 0)] {
-            let new_pos = (pos.0 + dir.0, pos.1 + dir.1);
-            if !region.contains(&new_pos) {
-                fence_segments.insert((*pos, *dir));
-            }
-        }
-    }
     while !fence_segments.is_empty() {
         let (pos, dir) = *fence_segments.iter().next().unwrap();
         fence_segments.remove(&(pos, dir));
@@ -119,7 +108,7 @@ fn calculate_fence_2(region: &HashSet<(i64, i64)>) -> i64 {
             }
         }
     }
-    sum * region.len() as i64
+    sum
 }
 
 fn read_file(file: &str) -> String {
