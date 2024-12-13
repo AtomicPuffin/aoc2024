@@ -51,7 +51,7 @@ fn solve_linear_equation(a: i64, b: i64, c: i64, d: i64, e: i64, f: i64) -> Opti
     Some((x, y))
 }
 
-fn parse_input(input: &str) -> Vec<(Vec<(i64, i64)>)> {
+fn parse_input(input: &str) -> Vec<Vec<(i64, i64)>> {
     let machines = input
         .split("\n\n")
         .collect::<Vec<&str>>()
@@ -73,7 +73,7 @@ fn parse_input(input: &str) -> Vec<(Vec<(i64, i64)>)> {
     machines
 }
 
-fn parse_input_old(input: &str) -> Vec<(Vec<(i64, i64)>)> {
+fn parse_input_old(input: &str) -> Vec<Vec<(i64, i64)>> {
     let machines_raw = input.split("\n\n").collect::<Vec<&str>>();
     let mut machines = Vec::new();
     for m in machines_raw {
