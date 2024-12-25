@@ -1,4 +1,4 @@
-#![allow(unused_mut)]
+//#![allow(unused_mut)]
 //use itertools::Itertools;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -18,7 +18,7 @@ fn main() {
 }
 
 fn part_1(input: &str) -> u64 {
-    let mut secrets = parse_input(input);
+    let secrets = parse_input(input);
     let mut sum = 0;
     for mut secret in secrets {
         for _ in 0..2000 {
@@ -42,7 +42,7 @@ fn parse_input(input: &str) -> Vec<u64> {
 }
 
 fn part_2(input: &str) -> u64 {
-    let mut secrets = parse_input(input);
+    let secrets = parse_input(input);
     let mut change_vec = Vec::new();
     for mut secret in secrets {
         let mut changes = Vec::new();
